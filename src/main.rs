@@ -2,7 +2,13 @@ mod cli;
 
 fn main() -> anyhow::Result<()> {
     let args = cli::build().get_matches();
-    todo!("The rest is not implement!");
+
+    match args.subcommand() {
+        Some(("projects", args)) => {
+            cli::cmds::projects::run(args)?;
+        }
+        _ => todo!("Not other subcommands are implemented"),
+    }
 
     Ok(())
 }
