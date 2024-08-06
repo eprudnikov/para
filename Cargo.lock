@@ -97,11 +97,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7943c866cc5cd64cbc25b2e01621d07fa8eb2a1a23160ee81ce38704e97b8ecf"
 
 [[package]]
+name = "markdown"
+version = "1.0.0-alpha.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4e61c5c85b392273c4d4ea546e6399ace3e3db172ab01b6de8f3d398d1dbd2ec"
+dependencies = [
+ "unicode-id",
+]
+
+[[package]]
 name = "para"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
+ "markdown",
 ]
 
 [[package]]
@@ -109,6 +119,12 @@ name = "strsim"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
+
+[[package]]
+name = "unicode-id"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1b6def86329695390197b82c1e244a54a131ceb66c996f2088a3876e2ae083f"
 
 [[package]]
 name = "utf8parse"

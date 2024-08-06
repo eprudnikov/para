@@ -1,5 +1,7 @@
 use clap::Command;
 
+pub mod context;
+pub mod projects;
 pub mod cmds;
 
 pub fn build() -> Command {
