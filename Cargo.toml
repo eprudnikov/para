@@ -6,4 +6,5 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.86"
 clap = "4.5.11"
+colored = "2.1.0"
 markdown = "1.0.0-alpha.18"
