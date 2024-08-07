@@ -19,12 +19,22 @@ pub fn run(ctx: Context) -> Result<()> {
                     && !project_name.starts_with(".")
                 {
                     let project = Project::read(&project_name, &ctx);
-                    println!("・{}", project_name.bold());
+                    let status: &str = if project.is_complete {
+                        "🤩"
+                    } else if !project.has_goal || !project.has_action_items {
+                        "🤔"
+                    } else {
+                        ""
+                    };
+                    println!("◦ {} {}", project.name.bold(), status);
+                    if let Some(next_action_item) = project.next_action_item {
+                        println!("\t・ {}", next_action_item)
+                    }
                     if !project.has_goal {
-                        println!("\t⚠️ {}", "The project has no defined goal".red())
+                        println!("\t・{}", "The project has no defined goal".red())
                     }
                     if !project.has_action_items {
-                        println!("\t⚠️ {}", "The project has no action items.".red())
+                        println!("\t・ {}", "The project has no action items.".red())
                     }
                 }
             }
