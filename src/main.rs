@@ -8,7 +8,7 @@ fn main() -> anyhow::Result<()> {
     //     }
     //     _ => todo!("Not other subcommands are implemented"),
     // }
-    cli::cmds::projects::run(cli::context::Context::new())?;
+    cli::cmds::projects::run(cli::context::Context::load())?;
 
     Ok(())
 }

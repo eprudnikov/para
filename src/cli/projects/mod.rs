@@ -17,7 +17,7 @@ pub struct Project {
 
 impl Project {
     pub fn read(name: &str, ctx: &Context) -> Self {
-        let descriptor_path_as_string = format!("{}/{}/{}.md", ctx.project_directory, name, name);
+        let descriptor_path_as_string = format!("{}/{}/{}.md", ctx.projects_dir, name, name);
         let descriptor_path = Path::new(&descriptor_path_as_string);
         if !descriptor_path.exists() {
             return Project {

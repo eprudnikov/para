@@ -6,8 +6,8 @@ use colored::Colorize;
 use crate::cli::context::Context;
 use crate::cli::projects::Project;
 
-pub fn run(ctx: Context) -> Result<()> {
-    match fs::read_dir(&ctx.project_directory) {
+pub fn run(config: Context) -> Result<()> {
+    match fs::read_dir(&config.projects_dir) {
         Err(why) => println!("! {:?}", why.kind()),
         Ok(paths) => {
             for path in paths {
@@ -18,7 +18,7 @@ pub fn run(ctx: Context) -> Result<()> {
                 if dir_entity.file_type().is_ok_and(|f| f.is_dir())
                     && !project_name.starts_with(".")
                 {
-                    let project = Project::read(&project_name, &ctx);
+                    let project = Project::read(&project_name, &config);
                     let status: &str = if project.is_complete {
                         "🤩"
                     } else if !project.has_goal || !project.has_action_items {
