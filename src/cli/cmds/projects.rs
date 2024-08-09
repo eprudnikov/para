@@ -26,16 +26,15 @@ pub fn run(config: Context) -> Result<()> {
                     } else {
                         ""
                     };
-                    println!("◦ {} {}", project.name.bold(), status);
-                    if let Some(next_action_item) = project.next_action_item {
-                        println!("\t・ {}", next_action_item)
-                    }
+                    println!("◦ {} {}\t{}/{}", project.name.bold(), status,
+                             project.done_action_items, project.total_action_items);
                     if !project.has_goal {
                         println!("\t・{}", "The project has no defined goal".red())
                     }
                     if !project.has_action_items {
                         println!("\t・ {}", "The project has no action items.".red())
                     }
+                    // break;
                 }
             }
         }

@@ -9,6 +9,8 @@ use crate::cli::context::Context;
 
 pub struct Project {
     pub name: String,
+    pub total_action_items: u16,
+    pub done_action_items: u16,
     pub has_goal: bool,
     pub has_action_items: bool,
     pub next_action_item: Option<String>,
@@ -22,6 +24,8 @@ impl Project {
         if !descriptor_path.exists() {
             return Project {
                 name: String::from(name),
+                total_action_items: 0,
+                done_action_items: 0,
                 has_goal: false,
                 has_action_items: false,
                 next_action_item: None,
@@ -34,48 +38,70 @@ impl Project {
 
         let mut is_goal_found = false;
         let mut is_action_items_found = false;
-        let mut has_any_action_item = false;
         let mut next_action_item: Option<String> = None;
-        for node in mdast.unwrap().children().unwrap() {
+        let mut action_items_header_position: usize = 0;
+        let mut end_action_items_header: usize = 0;
+        let mut total_action_items: u16 = 0;
+        let mut done_action_items: u16 = 0;
+
+        let binding = mdast.unwrap();
+        let root_nodes = binding.children().unwrap();
+        for (position, node) in root_nodes.iter().enumerate() {
             if let Node::Heading(heading) = node {
+                if heading.depth > 1 {
+                    continue; // skip nested headers
+                }
+                if is_action_items_found { // the next header after Action items is found
+                    end_action_items_header = position;
+                    break;
+                }
+
                 if let Node::Text(text) = &heading.children[0] {
                     if text.value == "Goal" {
                         is_goal_found = true;
                     }
                     if text.value == "Action items" {
                         is_action_items_found = true;
+                        action_items_header_position = position;
                     }
                 }
             }
-            if !is_action_items_found {
-                continue; // the next block makes sense only inside the Action items
-            }
+        }
 
-            if let Node::List(list) = node {
-                for list_child in &list.children {
-                    if let Node::ListItem(list_item) = list_child {
-                        let text = list_item.children[0].to_string();
-                        has_any_action_item = true;
-                        if text.contains("[ ]") {
-                            next_action_item = Some(String::from(
-                                text.replace("[ ]", "").trim()
-                            ));
-                            break;
+        if is_action_items_found {
+            let end = if end_action_items_header == 0 {
+                root_nodes.len()
+            } else {
+                end_action_items_header
+            };
+
+            for node in &root_nodes[action_items_header_position + 1..end] {
+                if let Node::List(list) = node {
+                    for list_child in &list.children {
+                        if let Node::ListItem(list_item) = list_child {
+                            let text = list_item.children[0].to_string();
+                            total_action_items = total_action_items + 1;
+                            if next_action_item.is_none() && text.contains("[ ]") {
+                                next_action_item = Some(String::from(
+                                    text.replace("[ ]", "").trim()
+                                ));
+                            }
+                            if text.contains("[x]") {
+                                done_action_items = done_action_items + 1;
+                            }
                         }
                     }
                 }
-            }
-
-            if next_action_item.is_some() {
-                break; // found all necessary information
             }
         }
 
         Project {
             name: String::from(name),
+            total_action_items,
+            done_action_items,
             has_goal: is_goal_found,
-            has_action_items: is_action_items_found,
-            is_complete: has_any_action_item && next_action_item.is_none(),
+            has_action_items: total_action_items > 0,
+            is_complete: total_action_items == done_action_items,
             next_action_item: next_action_item,
         }
     }
