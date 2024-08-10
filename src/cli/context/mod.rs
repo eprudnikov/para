@@ -13,6 +13,7 @@ struct Data {
 pub struct Context {
     pub base_dir: String,
     pub projects_dir: String,
+    pub areas_dir: String,
 }
 
 impl Context {

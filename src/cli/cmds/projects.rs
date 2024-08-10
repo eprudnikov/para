@@ -4,10 +4,10 @@ use anyhow::Result;
 use colored::Colorize;
 
 use crate::cli::context::Context;
-use crate::cli::projects::Project;
+use crate::cli::project::Project;
 
-pub fn run(config: Context) -> Result<()> {
-    match fs::read_dir(&config.projects_dir) {
+pub fn run(ctx: &Context) -> Result<()> {
+    match fs::read_dir(&ctx.projects_dir) {
         Err(why) => println!("! {:?}", why.kind()),
         Ok(paths) => {
             let mut project_names = Vec::new();
@@ -24,7 +24,7 @@ pub fn run(config: Context) -> Result<()> {
             }
 
             for project_name in &project_names {
-                let project = Project::read(&project_name, &config);
+                let project = Project::read(&project_name, &ctx);
                 let status: &str = if project.is_complete {
                     "🤩"
                 } else if !project.has_goal || !project.has_action_items {
