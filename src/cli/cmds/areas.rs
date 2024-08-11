@@ -13,6 +13,6 @@ pub fn run(ctx: &Context) {
         } else {
             &no_projects_count
         };
-        println!("◦ {:<30}\t{}", area.name.bold(), projects_count);
+        println!("◦ {:<30}\t{:<20}\t{}", area.name.bold(), "", projects_count);
     }
 }
