@@ -1,5 +1,4 @@
 use std::fs::read_to_string;
-use std::io::Read;
 use std::path::Path;
 
 use markdown::mdast::Node;
@@ -12,9 +11,8 @@ pub struct Project {
     pub total_action_items: u16,
     pub done_action_items: u16,
     pub has_goal: bool,
-    pub has_action_items: bool,
     pub next_action_item: Option<String>,
-    pub is_complete: bool
+    pub is_complete: bool,
 }
 
 impl Project {
@@ -27,9 +25,8 @@ impl Project {
                 total_action_items: 0,
                 done_action_items: 0,
                 has_goal: false,
-                has_action_items: false,
                 next_action_item: None,
-                is_complete: false
+                is_complete: false,
             };
         }
 
@@ -51,7 +48,8 @@ impl Project {
                 if heading.depth > 1 {
                     continue; // skip nested headers
                 }
-                if is_action_items_found { // the next header after Action items is found
+                if is_action_items_found {
+                    // the next header after Action items is found
                     end_action_items_header = position;
                     break;
                 }
@@ -82,9 +80,8 @@ impl Project {
                             let text = list_item.children[0].to_string();
                             total_action_items = total_action_items + 1;
                             if next_action_item.is_none() && text.contains("[ ]") {
-                                next_action_item = Some(String::from(
-                                    text.replace("[ ]", "").trim()
-                                ));
+                                next_action_item =
+                                    Some(String::from(text.replace("[ ]", "").trim()));
                             }
                             if text.contains("[x]") {
                                 done_action_items = done_action_items + 1;
@@ -100,7 +97,6 @@ impl Project {
             total_action_items,
             done_action_items,
             has_goal: is_goal_found,
-            has_action_items: total_action_items > 0,
             is_complete: total_action_items == done_action_items,
             next_action_item: next_action_item,
         }
