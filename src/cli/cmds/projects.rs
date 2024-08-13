@@ -27,10 +27,13 @@ fn print_project(project: &Project) {
         project.total_action_items,
         status
     );
+    for item in &project.important_action_items {
+        println!("  ・{}", item)
+    }
     if !project.has_goal {
-        println!("\t・{}", "The project has no defined goal".red())
+        println!("  ・{}", "The project has no defined goal".red())
     }
     if project.total_action_items == 0 {
-        println!("\t・ {}", "The project has no action items.".red())
+        println!("  ・ {}", "The project has no action items.".red())
     }
 }

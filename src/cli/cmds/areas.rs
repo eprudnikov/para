@@ -24,5 +24,8 @@ pub fn run(ctx: &Context) {
             String::from(no_items)
         };
         println!("◦ {:<30}\t{:<20}\t{}", area.name.bold(), action_item_count, projects_count);
+        for item in &area.important_action_items {
+            println!("  ・{}", item)
+        }
     }
 }

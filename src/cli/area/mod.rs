@@ -8,7 +8,8 @@ pub struct Area {
     pub name: String,
     pub projects: Option<Vec<String>>,
     pub total_action_items: Option<u16>,
-    pub done_action_items: Option<u16>
+    pub done_action_items: Option<u16>,
+    pub important_action_items: Vec<String>,
 }
 
 impl Area {
@@ -22,6 +23,8 @@ impl Area {
 
         let mut total_action_items = 0;
         let mut done_action_items = 0;
+        let mut important_action_items = Vec::new();
+
         let descriptor_path = format!("{}/{}/{}.md", ctx.areas_dir, name, name);
         if let Ok(content) = read_to_string(descriptor_path) {
             let mdast = to_mdast(&content, &markdown::ParseOptions::default());
@@ -65,6 +68,11 @@ impl Area {
                             if let Node::ListItem(list_item) = list_child {
                                 let text = list_item.children[0].to_string();
                                 total_action_items = total_action_items + 1;
+                                if text.contains("[ ]") && text.contains("❗️") {
+                                    important_action_items.push(
+                                        String::from(text.replace("[ ]", "").trim())
+                                    );
+                                }
                                 if text.contains("[x]") {
                                     done_action_items = done_action_items + 1;
                                 }
@@ -87,7 +95,8 @@ impl Area {
                 Some(done_action_items)
             } else {
                 None
-            }
+            },
+            important_action_items
         }
     }
 }

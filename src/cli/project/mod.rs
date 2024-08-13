@@ -11,7 +11,7 @@ pub struct Project {
     pub total_action_items: u16,
     pub done_action_items: u16,
     pub has_goal: bool,
-    pub next_action_item: Option<String>,
+    pub important_action_items: Vec<String>,
     pub is_complete: bool,
 }
 
@@ -25,7 +25,7 @@ impl Project {
                 total_action_items: 0,
                 done_action_items: 0,
                 has_goal: false,
-                next_action_item: None,
+                important_action_items: Vec::new(),
                 is_complete: false,
             };
         }
@@ -35,7 +35,7 @@ impl Project {
 
         let mut is_goal_found = false;
         let mut is_action_items_found = false;
-        let mut next_action_item: Option<String> = None;
+        let mut important_action_items = Vec::new();
         let mut action_items_header_position: usize = 0;
         let mut end_action_items_header: usize = 0;
         let mut total_action_items: u16 = 0;
@@ -79,9 +79,10 @@ impl Project {
                         if let Node::ListItem(list_item) = list_child {
                             let text = list_item.children[0].to_string();
                             total_action_items = total_action_items + 1;
-                            if next_action_item.is_none() && text.contains("[ ]") {
-                                next_action_item =
-                                    Some(String::from(text.replace("[ ]", "").trim()));
+                            if text.contains("[ ]") && text.contains("❗️") {
+                                important_action_items.push(
+                                    String::from(text.replace("[ ]", "").trim())
+                                );
                             }
                             if text.contains("[x]") {
                                 done_action_items = done_action_items + 1;
@@ -98,7 +99,7 @@ impl Project {
             done_action_items,
             has_goal: is_goal_found,
             is_complete: total_action_items == done_action_items,
-            next_action_item: next_action_item,
+            important_action_items
         }
     }
 }
