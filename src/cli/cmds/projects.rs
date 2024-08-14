@@ -28,7 +28,7 @@ fn print_project(project: &Project) {
         status
     );
     for item in &project.important_action_items {
-        if (item.len() > 100) {
+        if item.len() > 100 {
             println!("  ・{}…", item[..100].to_string())
         } else {
             println!("  ・{}", item)

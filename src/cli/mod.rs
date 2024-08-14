@@ -1,4 +1,3 @@
-use clap::Command;
 use io::Error;
 use std::{fs, io};
 
@@ -6,14 +5,6 @@ pub mod area;
 pub mod cmds;
 pub mod context;
 pub mod project;
-
-pub fn build() -> Command {
-    Command::new("para")
-        .about("CLI tool to support my PARA method")
-        .subcommand(Command::new("projects").about("Overview active projects"))
-        .subcommand(Command::new("areas").about("Overview all areas"))
-        .subcommand(Command::new("day").about("Init today's note in the Journal"))
-}
 
 fn read_dir(path: &str) -> Result<Vec<String>, Error> {
     let mut result = Vec::new();

@@ -25,7 +25,7 @@ pub fn run(ctx: &Context) {
         };
         println!("◦ {:<30}\t{:<20}\t{}", area.name.bold(), action_item_count, projects_count);
         for item in &area.important_action_items {
-            if (item.len() > 100) {
+            if item.len() > 100 {
                 println!("  ・{}…", item[..100].to_string())
             } else {
                 println!("  ・{}", item)
