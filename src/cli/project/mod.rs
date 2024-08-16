@@ -89,7 +89,8 @@ impl Project {
     }
 }
 
-/// Returns the number total, done action items as well as a list of important items
+/// Returns the number total, done action items as well as a list of important items. The important
+/// items are marked by ❗️ or ««« (in my notation, it's current task).
 fn process_action_item_nodes(nodes: &[Node]) -> (u16, u16, Vec<String>) {
     let mut total_action_items = 0;
     let mut done_action_items = 0;
@@ -116,7 +117,7 @@ fn process_list(list: &List) -> (u16, u16, Vec<String>) {
                 if let Node::Paragraph(_paragraph) = list_grand_child {
                     let text = list_grand_child.to_string();
                     total_action_items = total_action_items + 1;
-                    if text.contains("[ ]") && text.contains("❗") {
+                    if text.contains("[ ]") && (text.contains("❗") || text.contains("«««")) {
                         important_action_items.push(
                             String::from(text.replace("[ ]", "").trim())
                         );
@@ -155,7 +156,7 @@ mod tests {
         let mdast = to_mdast("\
 - [x] Completed task
     - [ ] Incompleted subtask
-- [ ] Incompleted task
+- [ ] Current task «««
 - [ ] Incompleted important task ❗
         ", &markdown::ParseOptions::default());
         let binding = mdast.unwrap();
@@ -164,7 +165,8 @@ mod tests {
         let (total, done, important) = process_action_item_nodes(root_nodes);
         assert_eq!(total, 4);
         assert_eq!(done, 1);
-        assert_eq!(important.len(), 1);
-        assert_eq!(important[0], "Incompleted important task ❗");
+        assert_eq!(important.len(), 2);
+        assert_eq!(important[0], "Current task «««");
+        assert_eq!(important[1], "Incompleted important task ❗");
     }
 }
