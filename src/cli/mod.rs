@@ -5,6 +5,7 @@ pub mod area;
 pub mod cmds;
 pub mod context;
 pub mod project;
+mod md;
 
 fn read_dir(path: &str) -> Result<Vec<String>, Error> {
     let mut result = Vec::new();
