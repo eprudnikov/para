@@ -1,3 +1,3 @@
-pub mod projects;
+pub mod project;
 pub mod overview;
-pub mod areas;
+pub mod area;
