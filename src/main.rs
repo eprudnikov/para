@@ -7,7 +7,7 @@ fn main() -> anyhow::Result<()> {
         Some(("overview", _)) => cli::cmds::overview::run(&ctx),
         Some(("project", _)) => cli::cmds::project::run(&ctx),
         Some(("area", _)) => cli::cmds::area::run(&ctx),
-        Some(("day", _)) => todo!("The day command is not implemented yet."),
+        Some(("day", _)) => cli::cmds::day::run(&ctx),
         _ => cli::cmds::overview::run(&ctx) // overview is the default command
     }
     Ok(())
