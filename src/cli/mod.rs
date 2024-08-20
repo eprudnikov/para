@@ -7,6 +7,7 @@ pub mod cmds;
 pub mod context;
 pub mod project;
 mod md;
+mod week;
 
 pub fn build() -> Command {
     Command::new("para")

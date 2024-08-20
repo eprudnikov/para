@@ -1,11 +1,12 @@
-use crate::cli::context::Context;
-use chrono::Datelike;
-use std::fs;
-use std::path::Path;
-use colored::Colorize;
 use crate::cli::area::Area;
+use crate::cli::context::Context;
 use crate::cli::project::Project;
 use crate::cli::read_dir;
+use chrono::Datelike;
+use colored::Colorize;
+use std::fs;
+use std::path::Path;
+use crate::cli::week::Week;
 
 pub fn run(ctx: &Context) {
     let today = chrono::offset::Local::now().date_naive();
@@ -21,8 +22,10 @@ pub fn run(ctx: &Context) {
         }
     }
 
+    println!("\nPlease consider the following action items:");
     print_project_action_items(ctx);
     print_area_action_items(ctx);
+    print_week_action_items(ctx);
 }
 
 fn print_project_action_items(ctx: &Context) {
@@ -38,6 +41,15 @@ fn print_area_action_items(ctx: &Context) {
     for area_name in &area_names {
         let area = Area::read(area_name, ctx);
         print_action_items(&area.name, &area.printable_action_items);
+    }
+}
+
+fn print_week_action_items(ctx: &Context) {
+    match Week::from_today(ctx) {
+        None => println!("The weekly note doesn't exist. Please consider creating it."),
+        Some(week) => {
+            print_action_items(&week.name, &week.printable_action_items);
+        }
     }
 }
 
