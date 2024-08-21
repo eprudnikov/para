@@ -1,6 +1,6 @@
 use std::fs::read_to_string;
 use std::path::Path;
-
+use std::process::exit;
 use markdown::to_mdast;
 
 use crate::cli::context::Context;
@@ -17,6 +17,13 @@ pub struct Project {
 
 impl Project {
     pub fn read(name: &str, ctx: &Context) -> Self {
+        let project_path = format!("{}/{}", ctx.projects_dir, name);
+        let project_path = Path::new(&project_path);
+        if !project_path.is_dir() {
+            eprintln!("There is no project '{}'", name);
+            exit(1);
+        }
+
         let descriptor_path_as_string = format!("{}/{}/{}.md", ctx.projects_dir, name, name);
         let descriptor_path = Path::new(&descriptor_path_as_string);
         if !descriptor_path.exists() {

@@ -5,8 +5,10 @@ fn main() -> anyhow::Result<()> {
     let ctx = cli::context::Context::load();
     match args.subcommand() {
         Some(("overview", _)) => cli::cmds::overview::run(&ctx),
-        Some(("project", _)) => cli::cmds::project::run(&ctx),
-        Some(("area", _)) => cli::cmds::area::run(&ctx),
+        Some(("project", args)) =>
+            cli::cmds::project::run(args.get_one::<String>("name"), &ctx),
+        Some(("area", args)) =>
+            cli::cmds::area::run(args.get_one::<String>("name"), &ctx),
         Some(("day", _)) => cli::cmds::day::run(&ctx),
         _ => cli::cmds::overview::run(&ctx) // overview is the default command
     }

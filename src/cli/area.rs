@@ -2,6 +2,8 @@ use super::{md, read_dir};
 use crate::cli::context::Context;
 use markdown::to_mdast;
 use std::fs::read_to_string;
+use std::path::Path;
+use std::process::exit;
 
 pub struct Area {
     pub name: String,
@@ -13,6 +15,13 @@ pub struct Area {
 
 impl Area {
     pub fn read(name: &str, ctx: &Context) -> Self {
+        let area_path = format!("{}/{}", ctx.areas_dir, name);
+        let area_path = Path::new(&area_path);
+        if !area_path.is_dir() {
+            eprintln!("There is no area '{}'", name);
+            exit(1);
+        }
+
         let projects_path = format!("{}/{}/Projects", ctx.areas_dir, name);
         let projects: Option<Vec<String>> = if let Ok(projects) = read_dir(&projects_path) {
             Some(projects)

@@ -5,7 +5,7 @@ use colored::Colorize;
 
 pub fn run(ctx: &Context) {
     println!("{:<32}\t{:<20}", "Projects:".bold(), "Action items".bold());
-    project::run(ctx);
+    project::run(None, ctx);
 
     println!(
         "\n{:<32}\t{:<20}\t{}",
@@ -13,6 +13,6 @@ pub fn run(ctx: &Context) {
         "Action items".bold(),
         "Projects".bold()
     );
-    area::run(ctx);
+    area::run(None, ctx);
 }
 

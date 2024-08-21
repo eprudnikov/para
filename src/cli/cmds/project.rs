@@ -4,11 +4,19 @@ use crate::cli::context::Context;
 use crate::cli::project::Project;
 use crate::cli::read_dir;
 
-pub fn run(ctx: &Context) {
-    let project_names = read_dir(&ctx.projects_dir).unwrap();
-    for project_name in &project_names {
-        let project = Project::read(project_name, ctx);
-        print_project(&project);
+pub fn run(name: Option<&String>, ctx: &Context) {
+    match name {
+        Some(project_name) => {
+            let project = Project::read(project_name, ctx);
+            print_project(&project);
+        },
+        None => {
+            let project_names = read_dir(&ctx.projects_dir).unwrap();
+            for project_name in &project_names {
+                let project = Project::read(project_name, ctx);
+                print_project(&project);
+            }
+        }
     }
 }
 

@@ -1,6 +1,6 @@
+use clap::{Arg, Command};
 use io::Error;
 use std::{fs, io};
-use clap::Command;
 
 pub mod area;
 pub mod cmds;
@@ -15,10 +15,16 @@ pub fn build() -> Command {
         .subcommand(Command::new("overview").about("List all active projects and all areas"))
         .subcommand(Command::new("project")
             .alias("projects")
-            .about("Show details of a specific project or list all of them."))
+            .about("Show details of a specific project or list all of them.")
+            .arg(Arg::new("name").short('n').long("name")
+                .required(false)
+                .help("The project name")))
         .subcommand(Command::new("area")
             .alias("areas")
-            .about("Show details of a specific area or list all of them."))
+            .about("Show details of a specific area or list all of them.")
+            .arg(Arg::new("name").short('n').long("name")
+                .required(false)
+                .help("The area name")))
         .subcommand(Command::new("day").about("Init today's note in the Journal"))
 }
 
