@@ -1,3 +1,4 @@
+use std::fs;
 use crate::cli::context::Context;
 use crate::cli::md;
 use chrono::Datelike;
@@ -12,13 +13,19 @@ pub struct Week {
 }
 
 impl Week {
-    pub fn from_today(ctx: &Context) -> Option<Self> {
+    pub fn from_today(ctx: &Context, create: bool) -> Option<Self> {
         let today = chrono::offset::Local::now().date_naive();
         let week = format!("W{}", &today.iso_week().week());
         let path_as_string = format!("{}/Journaling 📔/{}/{}.md", ctx.areas_dir, today.year(), week);
         let path = Path::new(&path_as_string);
         if !path.exists() {
-            return None;
+            if !create {
+                return None;
+            }
+            if let Err(err) = fs::copy(&ctx.weekly_template, &path_as_string) {
+                eprintln!("Failed to create the file: {}", err);
+                return None;
+            }
         }
 
         let mut printable_items = Vec::new();

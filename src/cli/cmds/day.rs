@@ -45,7 +45,7 @@ fn print_area_action_items(ctx: &Context) {
 }
 
 fn print_week_action_items(ctx: &Context) {
-    match Week::from_today(ctx) {
+    match Week::from_today(ctx, true) {
         None => println!("The weekly note doesn't exist. Please consider creating it."),
         Some(week) => {
             print_action_items(&week.name, &week.printable_action_items);

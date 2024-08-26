@@ -14,6 +14,7 @@ pub struct Context {
     pub projects_dir: String,
     pub areas_dir: String,
     pub daily_template: String,
+    pub weekly_template: String,
 }
 
 impl Context {
