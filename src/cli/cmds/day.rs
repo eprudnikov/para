@@ -6,11 +6,11 @@ use chrono::Datelike;
 use colored::Colorize;
 use std::fs;
 use std::path::Path;
+use crate::cli::day::Day;
 use crate::cli::week::Week;
 
 pub fn run(ctx: &Context) {
-    let today = chrono::offset::Local::now().date_naive();
-    let path_as_string = format!("{}/Journaling 📔/{}/{}.md", ctx.areas_dir, today.year(), &today);
+    let path_as_string = Day::get_path(ctx, 0);
     let daily_note_path = Path::new(&path_as_string);
     if daily_note_path.exists() {
         println!("The daily note exists.");
