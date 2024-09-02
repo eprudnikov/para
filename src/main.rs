@@ -2,7 +2,7 @@ mod cli;
 
 fn main() -> anyhow::Result<()> {
     let args = cli::build().get_matches();
-    let ctx = cli::context::Context::load();
+    let ctx = cli::context::Context::load(&args);
     match args.subcommand() {
         Some(("overview", _)) => cli::cmds::overview::run(&ctx),
         Some(("project", args)) =>

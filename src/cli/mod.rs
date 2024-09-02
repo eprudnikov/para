@@ -1,4 +1,4 @@
-use clap::{Arg, Command};
+use clap::{Arg, ArgAction, Command};
 use io::Error;
 use std::{fs, io};
 
@@ -13,6 +13,9 @@ mod day;
 pub fn build() -> Command {
     Command::new("para")
         .about("CLI tool to support my PARA method")
+        .arg(Arg::new("verbose").short('v').long("verbose")
+            .action(ArgAction::SetTrue)
+            .help("Turn on verbose mode"))
         .subcommand(Command::new("overview").about("List all active projects and all areas"))
         .subcommand(Command::new("project")
             .alias("projects")
@@ -24,7 +27,6 @@ pub fn build() -> Command {
             .alias("areas")
             .about("Show details of a specific area or list all of them.")
             .arg(Arg::new("name").short('n').long("name")
-                .required(false)
                 .help("The area name")))
         .subcommand(Command::new("day").about("Init today's note in the Journal"))
 }
