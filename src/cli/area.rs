@@ -10,7 +10,8 @@ pub struct Area {
     pub projects: Option<Vec<String>>,
     pub total_action_items: u16,
     pub done_action_items: u16,
-    pub printable_action_items: Vec<String>,
+    pub important_action_items: Vec<String>,
+    pub interesting_action_items: Vec<String>,
 }
 
 impl Area {
@@ -29,7 +30,8 @@ impl Area {
             None
         };
 
-        let mut printable_items = Vec::new();
+        let mut important_items = Vec::new();
+        let mut interesting_items = Vec::new();
         let mut total: u16 = 0;
         let mut done: u16 = 0;
 
@@ -46,7 +48,8 @@ impl Area {
                     None => root_nodes.len()
                 };
 
-                (total, done, printable_items) = md::process_action_item_nodes(&root_nodes[start + 1..end]);
+                (total, done, important_items, interesting_items)
+                    = md::process_action_item_nodes(&root_nodes[start + 1..end]);
             }
         }
 
@@ -55,7 +58,8 @@ impl Area {
             projects,
             total_action_items: total,
             done_action_items: done,
-            printable_action_items: printable_items
+            important_action_items: important_items,
+            interesting_action_items: interesting_items
         }
     }
 }

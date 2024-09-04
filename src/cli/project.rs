@@ -11,7 +11,8 @@ pub struct Project {
     pub total_action_items: u16,
     pub done_action_items: u16,
     pub has_goal: bool,
-    pub printable_action_items: Vec<String>,
+    pub important_action_items: Vec<String>,
+    pub interesting_action_items: Vec<String>,
     pub is_complete: bool,
 }
 
@@ -32,7 +33,8 @@ impl Project {
                 total_action_items: 0,
                 done_action_items: 0,
                 has_goal: false,
-                printable_action_items: Vec::new(),
+                important_action_items: Vec::new(),
+                interesting_action_items: Vec::new(),
                 is_complete: false,
             };
         }
@@ -44,7 +46,8 @@ impl Project {
 
         let (goal_position, actions_start, actions_end) = md::find_goal_and_actions_positions(root_nodes);
 
-        let mut printable_items = Vec::new();
+        let mut important_items = Vec::new();
+        let mut interesting_items = Vec::new();
         let mut total: u16 = 0;
         let mut done: u16 = 0;
         if let Some(start) = actions_start {
@@ -53,7 +56,8 @@ impl Project {
                 None => root_nodes.len()
             };
 
-            (total, done, printable_items) = md::process_action_item_nodes(&root_nodes[start + 1..end]);
+            (total, done, important_items, interesting_items)
+                = md::process_action_item_nodes(&root_nodes[start + 1..end]);
         }
 
         Project {
@@ -62,7 +66,8 @@ impl Project {
             done_action_items: done,
             has_goal: goal_position.is_some(),
             is_complete: total == done,
-            printable_action_items: printable_items,
+            important_action_items: important_items,
+            interesting_action_items: interesting_items
         }
     }
 }

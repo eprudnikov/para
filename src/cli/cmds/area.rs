@@ -32,8 +32,8 @@ fn print_area(area: &Area, verbose: bool) {
         String::from(no_items)
     };
     println!("◦ {:<30}\t{:<20}\t{}", area.name.bold(), action_item_count, projects_count);
-    for item in &area.printable_action_items {
-        if item.len() > 100 {
+    for item in &area.important_action_items {
+        if item.len() > 100 { // TODO extract it to a common function
             println!("  ・ {}…", item[..100].to_string());
         } else {
             println!("  ・ {}", item);
@@ -41,6 +41,14 @@ fn print_area(area: &Area, verbose: bool) {
     }
 
     if verbose {
+        for item in &area.interesting_action_items {
+            if item.len() > 100 {
+                println!("  ・ {}…", item[..100].to_string());
+            } else {
+                println!("  ・ {}", item);
+            }
+        }
+
         if let Some(projects) = &area.projects {
             for project in projects {
                 println!("  ‣ {}", project);

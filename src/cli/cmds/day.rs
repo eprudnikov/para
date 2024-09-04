@@ -32,7 +32,7 @@ fn print_project_action_items(ctx: &Context) {
     let project_names = read_dir(&ctx.projects_dir).unwrap();
     for project_name in &project_names {
         let project = Project::read(project_name, ctx);
-        print_action_items(&project.name, &project.printable_action_items);
+        print_action_items(&project.name, &project.important_action_items);
     }
 }
 
@@ -40,7 +40,7 @@ fn print_area_action_items(ctx: &Context) {
     let area_names = read_dir(&ctx.areas_dir).unwrap();
     for area_name in &area_names {
         let area = Area::read(area_name, ctx);
-        print_action_items(&area.name, &area.printable_action_items);
+        print_action_items(&area.name, &area.important_action_items);
     }
 }
 

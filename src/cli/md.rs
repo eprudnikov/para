@@ -28,27 +28,32 @@ pub fn find_goal_and_actions_positions(nodes: &[Node]) -> (Option<usize>, Option
     (goal_position, actions_start, actions_end)
 }
 
-/// Returns the number total, done action items as well as a list of important items. The important
-/// items are marked by ❗️ or ««« (in my notation, it's current task).
-pub fn process_action_item_nodes(nodes: &[Node]) -> (u16, u16, Vec<String>) {
+/// Returns the number total, done action items, a list of important and interesting items.
+/// The important items are marked by ❗️ or ««« (in my notation, it's current task). Interesting
+/// ones are marked by 😍.
+pub fn process_action_item_nodes(nodes: &[Node]) -> (u16, u16, Vec<String>, Vec<String>) {
     let mut total_action_items = 0;
     let mut done_action_items = 0;
     let mut important_action_items = Vec::new();
+    let mut interesting_action_items = Vec::new();
     for node in nodes {
         if let Node::List(list) = node {
-            let (total, done, mut important) = process_list(list);
+            let (total, done, mut important, mut interesting)
+                = process_list(list);
             total_action_items = total_action_items + total;
             done_action_items = done_action_items + done;
             important_action_items.append(&mut important);
+            interesting_action_items.append(&mut interesting);
         }
     }
-    (total_action_items, done_action_items, important_action_items)
+    (total_action_items, done_action_items, important_action_items, interesting_action_items)
 }
 
-pub fn process_list(list: &List) -> (u16, u16, Vec<String>) {
+pub fn process_list(list: &List) -> (u16, u16, Vec<String>, Vec<String>) {
     let mut total_action_items = 0;
     let mut done_action_items = 0;
     let mut important_action_items = Vec::new();
+    let mut interesting_action_items = Vec::new();
 
     for list_child in &list.children {
         if let Node::ListItem(list_item) = list_child {
@@ -61,21 +66,28 @@ pub fn process_list(list: &List) -> (u16, u16, Vec<String>) {
                             String::from(text.replace("[ ]", "").trim())
                         );
                     }
+                    if text.contains("[ ]") && text.contains("😍") {
+                        interesting_action_items.push(
+                            String::from(text.replace("[ ]", "").trim())
+                        );
+                    }
                     if text.contains("[x]") {
                         done_action_items = done_action_items + 1;
                     }
                 }
 
                 if let Node::List(sublist) = &list_grand_child {
-                    let (total, done, mut important) = process_list(sublist);
+                    let (total, done, mut important, mut interesting)
+                        = process_list(sublist);
                     total_action_items = total_action_items + total;
                     done_action_items = done_action_items + done;
                     important_action_items.append(&mut important);
+                    interesting_action_items.append(&mut interesting);
                 }
             }
         }
     }
-    (total_action_items, done_action_items, important_action_items)
+    (total_action_items, done_action_items, important_action_items, interesting_action_items)
 }
 
 #[cfg(test)]
@@ -119,10 +131,11 @@ Here is an extra info.
 
     #[test]
     fn process_empty_action_item_nodes() {
-        let (total, done, important) = process_action_item_nodes(&Vec::new());
+        let (total, done, important, interesting) = process_action_item_nodes(&Vec::new());
         assert_eq!(total, 0);
         assert_eq!(done, 0);
         assert_eq!(important.len(), 0);
+        assert_eq!(interesting.len(), 0);
     }
 
     #[test]
@@ -131,16 +144,19 @@ Here is an extra info.
 - [x] Completed task
     - [ ] Incompleted subtask
 - [ ] Current task «««
+- [ ] An interesting item 😍
 - [ ] Incompleted important task ❗
         ", &markdown::ParseOptions::default());
         let binding = mdast.unwrap();
         let root_nodes = binding.children().unwrap();
 
-        let (total, done, important) = process_action_item_nodes(root_nodes);
-        assert_eq!(total, 4);
+        let (total, done, important, interesting) = process_action_item_nodes(root_nodes);
+        assert_eq!(total, 5);
         assert_eq!(done, 1);
         assert_eq!(important.len(), 2);
         assert_eq!(important[0], "Current task «««");
         assert_eq!(important[1], "Incompleted important task ❗");
+        assert_eq!(interesting.len(), 1);
+        assert_eq!(interesting[0], "An interesting item 😍");
     }
 }
