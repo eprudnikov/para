@@ -61,7 +61,7 @@ pub fn process_list(list: &List) -> (u16, u16, Vec<String>, Vec<String>) {
                 if let Node::Paragraph(_paragraph) = list_grand_child {
                     let text = list_grand_child.to_string();
                     // println!("--- {}", text);
-                    if text.contains("[x]") || text.contains("[ ] ~~~") {
+                    if text.contains("[x]") || text.contains("[ ] ~~") {
                         total_action_items = total_action_items + 1;
                         done_action_items = done_action_items + 1;
                     } else if text.contains("[ ]") {
@@ -189,13 +189,14 @@ Here is an extra info.
     fn process_ignored_items() {
         let mdast = to_mdast("\
 - [ ] ~~~Ignored task~~~
+- [ ] ~~Another ignored task~~
         ", &markdown::ParseOptions::default());
         let binding = mdast.unwrap();
         let root_nodes = binding.children().unwrap();
 
         let (total, done, important, interesting) = process_action_item_nodes(root_nodes);
-        assert_eq!(total, 1);
-        assert_eq!(done, 1);
+        assert_eq!(total, 2);
+        assert_eq!(done, 2);
         assert_eq!(important.len(), 0);
         assert_eq!(interesting.len(), 0);
     }
