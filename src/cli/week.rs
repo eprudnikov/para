@@ -17,8 +17,13 @@ pub struct Week {
 impl Week {
     pub fn from_today(ctx: &Context, create: bool) -> Option<Self> {
         let today = chrono::offset::Local::now().date_naive();
-        let week = format!("W{}", &today.iso_week().week());
-        let path_as_string = format!("{}/Journaling 📔/{}/{}.md", ctx.areas_dir, today.year(), week);
+        let week = format!("W{:02}", &today.iso_week().week());
+        let path_as_string = format!(
+            "{}/Journaling 📔/{}/{}.md",
+            ctx.areas_dir,
+            today.year(),
+            week
+        );
         let path = Path::new(&path_as_string);
         if !path.exists() {
             if !create {
@@ -44,11 +49,11 @@ impl Week {
             if let Some(start) = actions_start {
                 let end = match actions_end {
                     Some(e) => e,
-                    None => root_nodes.len()
+                    None => root_nodes.len(),
                 };
 
-                (total, done, important_items, interesting_items)
-                    = md::process_action_item_nodes(&root_nodes[start + 1..end]);
+                (total, done, important_items, interesting_items) =
+                    md::process_action_item_nodes(&root_nodes[start + 1..end]);
             }
         } else {
             eprintln!("Cannot read file {}", &path_as_string);
@@ -60,7 +65,8 @@ impl Week {
             total_action_items: total,
             done_action_items: done,
             important_action_items: important_items,
-            interesting_action_items: interesting_items
+            interesting_action_items: interesting_items,
         })
     }
 }
+
