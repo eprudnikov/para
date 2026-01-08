@@ -18,12 +18,7 @@ impl Week {
     pub fn from_today(ctx: &Context, create: bool) -> Option<Self> {
         let today = chrono::offset::Local::now().date_naive();
         let week = format!("W{:02}", &today.iso_week().week());
-        let path_as_string = format!(
-            "{}/Journaling 📔/{}/{}.md",
-            ctx.areas_dir,
-            today.year(),
-            week
-        );
+        let path_as_string = format!("{}/Journaling/{}/{}.md", ctx.areas_dir, today.year(), week);
         let path = Path::new(&path_as_string);
         if !path.exists() {
             if !create {
@@ -69,4 +64,3 @@ impl Week {
         })
     }
 }
-
