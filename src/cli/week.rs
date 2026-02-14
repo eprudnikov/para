@@ -24,7 +24,17 @@ impl Week {
             if !create {
                 return None;
             }
-            if let Err(err) = fs::copy(&ctx.weekly_template, &path_as_string) {
+            let template = match fs::read_to_string(&ctx.weekly_template) {
+                Ok(t) => t,
+                Err(err) => {
+                    eprintln!("Failed to read the template: {}", err);
+                    return None;
+                }
+            };
+            let year = today.year().to_string();
+            let month = format!("{:02}", today.month());
+            let content = template.replace("{{year}}", &year).replace("{{month}}", &month);
+            if let Err(err) = fs::write(&path_as_string, content) {
                 eprintln!("Failed to create the file: {}", err);
                 return None;
             }

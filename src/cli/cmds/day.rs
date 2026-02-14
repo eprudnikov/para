@@ -16,7 +16,18 @@ pub fn run(ctx: &Context) {
         println!("The daily note exists.");
     } else {
         println!("Create type {}", path_as_string);
-        if let Err(err) = fs::copy(&ctx.daily_template, daily_note_path) {
+        let template = match fs::read_to_string(&ctx.daily_template) {
+            Ok(content) => content,
+            Err(err) => {
+                eprintln!("Failed to read the template: {}", err);
+                return;
+            }
+        };
+        let today = chrono::offset::Local::now().date_naive();
+        let week = format!("W{:02}", today.iso_week().week());
+        let year = today.year().to_string();
+        let content = template.replace("{{week}}", &week).replace("{{year}}", &year);
+        if let Err(err) = fs::write(daily_note_path, content) {
             eprintln!("Failed to create the file: {}", err);
             return;
         }
