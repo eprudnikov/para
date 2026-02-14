@@ -8,6 +8,7 @@ pub mod context;
 pub mod project;
 mod md;
 mod week;
+mod month;
 mod day;
 
 pub fn build() -> Command {

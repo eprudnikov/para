@@ -16,6 +16,7 @@ pub struct Context {
     pub areas_dir: String,
     pub daily_template: String,
     pub weekly_template: String,
+    pub monthly_template: String,
     #[serde(skip_deserializing)]
     pub verbose: bool,
 }

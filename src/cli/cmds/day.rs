@@ -7,6 +7,7 @@ use colored::Colorize;
 use std::fs;
 use std::path::Path;
 use crate::cli::day::Day;
+use crate::cli::month::Month;
 use crate::cli::week::Week;
 
 pub fn run(ctx: &Context) {
@@ -36,6 +37,7 @@ pub fn run(ctx: &Context) {
     println!("\nPlease consider the following action items:");
     print_project_action_items(ctx);
     print_area_action_items(ctx);
+    print_month_action_items(ctx);
     print_week_action_items(ctx);
 }
 
@@ -52,6 +54,15 @@ fn print_area_action_items(ctx: &Context) {
     for area_name in &area_names {
         let area = Area::read(area_name, ctx);
         print_action_items(&area.name, &area.important_action_items);
+    }
+}
+
+fn print_month_action_items(ctx: &Context) {
+    match Month::from_today(ctx, true) {
+        None => println!("The monthly note doesn't exist. Please consider creating it."),
+        Some(month) => {
+            print_action_items(&month.name, &month.important_action_items);
+        }
     }
 }
 
