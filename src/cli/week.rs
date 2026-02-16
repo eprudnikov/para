@@ -32,8 +32,10 @@ impl Week {
                 }
             };
             let year = today.year().to_string();
-            let month = format!("{:02}", today.month());
-            let content = template.replace("{{year}}", &year).replace("{{month}}", &month);
+            let month = format!("M{:02}", today.month());
+            let content = template
+                .replace("{{year}}", &year)
+                .replace("{{month}}", &month);
             if let Err(err) = fs::write(&path_as_string, content) {
                 eprintln!("Failed to create the file: {}", err);
                 return None;
